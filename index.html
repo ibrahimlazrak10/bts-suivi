@@ -22,8 +22,8 @@ input.n{width:70px;text-align:center}
 .sc{overflow-x:auto}table{border-collapse:collapse;font-size:13px;width:100%}td,th{border-bottom:1px solid var(--b);padding:5px 6px;text-align:center;white-space:nowrap}td:first-child,th:first-child{text-align:left}
 textarea{width:100%;min-height:90px;background:var(--c);color:var(--t);border:1px solid var(--b);border-radius:10px}
 .hl{outline:2px solid var(--p)}
-</style></head><body>
-<h1>🎓 BTS Maintenance Automobile<small>Lycée Moulay Ismail – Meknès · Pr. Lazrak · Année 2026/2027</small></h1><main id="v"></main>
+</style><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script></head><body>
+<h1><span class="syncs" style="float:right;font-size:11px;font-weight:400;opacity:.9"></span>🎓 BTS Maintenance Automobile<small>Lycée Moulay Ismail – Meknès · Pr. Lazrak · Année 2026/2027</small></h1><main id="v"></main>
 <div class="nav" id="nav"></div>
 <script>
 const ST={1:[["D141135501","بن علال","أمين"],["D145126938","نيلو","خديجة"],["E138085389","بشار","سلمى"],["F148087404","البرهمي","عثمان"],["G135794743","اعلا","خالد"],["G147102980","بوهدي","ادم"],["H143073390","اعشير","ايوب"],["J144103339","حمومي","ادم"],["J146099493","تيواج","زينب"],["J148092120","مسعودي","اميمة"],["K130015883","لخضر","أسامة"],["K130082396","جعاف","يوسف"],["K141064451","مناصب","يحيى"],["L144079674","قوري","فاطمة الزهراء"],["M130038174","وانا","اسامة"],["M130111171","البديني","محمد"],["M130460253","العصري","براء"],["M132124233","العطاري","احمد"],["M132427322","الزوين","عبد الصمد"],["M134244042","أفردي","مراد"],["M136435796","عسلون","ملاك"],["M136460953","سالك","انس"],["M139157686","مياحي","توفيق"],["M140069537","مرزوق","أحمد"],["M140108092","حداوي","ايمان"],["M147096847","الفضيل","اسراء"],["M147111144","بشري","منير"],["N147113075","مجدوب","ادم"],["R142180633","الكريش","حنان"]],
@@ -31,7 +31,7 @@ const ST={1:[["D141135501","بن علال","أمين"],["D145126938","نيلو",
 const HOL0=[["2026-10-18","2026-10-25","Vacances inter-période 1"],["2026-10-31","2026-10-31","Fête de l'Unité"],["2026-11-06","2026-11-06","Marche Verte"],["2026-11-18","2026-11-18","Fête de l'Indépendance"],["2026-12-06","2026-12-13","Vacances inter-période 2"],["2027-01-01","2027-01-01","Nouvel An"],["2027-01-11","2027-01-11","Manifeste de l'Indépendance"],["2027-01-14","2027-01-14","Nouvel An amazigh"],["2027-01-24","2027-01-31","Vacances mi-année"],["2027-03-07","2027-03-10","Aïd al-Fitr (à ajuster)"],["2027-03-21","2027-03-28","Vacances inter-période 3"],["2027-05-01","2027-05-01","Fête du Travail"],["2027-05-09","2027-05-16","Vacances inter-période 4"],["2027-05-16","2027-05-18","Aïd al-Adha (à ajuster)"],["2027-06-06","2027-06-06","1er Muharram (à ajuster)"]];
 let S;try{S=JSON.parse(localStorage.getItem('bts'))}catch(e){}
 S=S||{sess:{},evals:[],hol:HOL0};
-const save=()=>{try{localStorage.setItem('bts',JSON.stringify(S))}catch(e){}};
+const save=()=>{S.ts=Date.now();try{localStorage.setItem('bts',JSON.stringify(S))}catch(e){}if(window.pushSync)pushSync()};
 const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const fd=s=>new Date(s+'T12:00').toLocaleDateString('fr-FR',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
@@ -68,6 +68,32 @@ function stats(c){return ST[c].map(([id,n,p],i)=>{const ab=s=>Object.entries(S.s
 function vBI(){const one=cls=='1',H=['N°','Étudiant','Abs ECSM',...(one?['Abs TP','Séances TP','Moy. TP /20']:[]),'DS1 S1','DS2 S1','Moy S1','DS1 S2','DS2 S2','Moy S2',one?'Ex. passage':'Ex. national'];const R=stats(cls).map(s=>[s.i,s.n,s.aE,...(one?[s.aT,s.nt,s.tp]:[]),s.d[0],s.d[1],s.s1,s.d[2],s.d[3],s.s2,s.ex]);window._R=[H,...R];return `<div class="card"><div class="row"><select onchange="cls=this.value;render()"><option value="1" ${one?'selected':''}>1ère année</option><option value="2" ${one?'':'selected'}>2ème année</option></select><button class="p" onclick="csv()">Exporter CSV</button></div></div><div class="card sc"><table><tr>${H.map(h=>`<th>${h}</th>`).join('')}</tr>${R.map(r=>`<tr>${r.map((v,j)=>`<td ${j==1?'dir="auto" style="text-align:start"':''}>${esc(v)}</td>`).join('')}</tr>`).join('')}</table></div><textarea id="out" hidden></textarea>`}
 function csv(){const t=window._R.map(r=>r.join(';')).join('\n');const o=$('#out');o.hidden=false;o.value=t;o.select();try{navigator.clipboard.writeText(t)}catch(e){}}
 function resetH(){if(confirm('Remplacer la liste par le calendrier officiel 2026/2027 ?')){S.hol=HOL0.map(h=>h.slice());save();render()}}
-render();
+
+const FC={apiKey:"AIzaSyANUiFMJZloW09xDh3seiWFxLFWKP6NeDI",authDomain:"bts-suivi.firebaseapp.com",projectId:"bts-suivi",storageBucket:"bts-suivi.firebasestorage.app",messagingSenderId:"850139076172",appId:"1:850139076172:web:78fe604779d6ab7c2986e9"};
+let fdb=null,fauth=null,user=null,unsub=null,pt=null,syncState='off';
+function setSync(t){syncState=t;const m={off:'☁ non connecté',ok:'☁ synchronisé',wait:'☁ synchronisation…',err:'☁ erreur de synchro'};document.querySelectorAll('.syncs').forEach(e=>e.textContent=m[t])}
+function initSync(){if(typeof firebase==='undefined'){setSync('off');return}
+try{firebase.initializeApp(FC);fauth=firebase.auth();fdb=firebase.firestore();fdb.enablePersistence({synchronizeTabs:true}).catch(()=>{})}catch(e){setSync('err');return}
+fauth.onAuthStateChanged(u=>{user=u;if(unsub){unsub();unsub=null}
+if(u){listen()}else{setSync('off');if(tab=='rg')render();if(!localStorage.getItem('btsNoSync'))loginUI()}})}
+const ref=()=>fdb.collection('users').doc(user.uid).collection('data').doc('state');
+function applyR(rs){S=rs;try{localStorage.setItem('bts',JSON.stringify(S))}catch(e){}render()}
+function listen(){setSync('wait');let first=true;unsub=ref().onSnapshot(snap=>{
+if(!snap.exists){pushNow();return}
+const rs=JSON.parse(snap.data().json);
+if(first){first=false;const has=Object.keys(S.sess).length||S.evals.length;
+if((rs.ts||0)>(S.ts||0)){if(has&&!S.ts&&!confirm('Les données du serveur vont remplacer celles de cet appareil. Continuer ?')){pushNow();return}applyR(rs)}
+else if((S.ts||0)>(rs.ts||0)){pushNow()}}
+else if((rs.ts||0)>(S.ts||0)&&!document.querySelector('.ov')){applyR(rs)}
+if(syncState!='err')setSync(snap.metadata.hasPendingWrites?'wait':'ok');if(tab=='rg')render()},()=>setSync('err'))}
+function pushSync(){if(!user||!fdb)return;clearTimeout(pt);setSync('wait');pt=setTimeout(pushNow,700)}
+function pushNow(){if(!user||!fdb)return;S.ts=S.ts||Date.now();ref().set({json:JSON.stringify(S),ts:S.ts}).then(()=>setSync('ok')).catch(()=>setSync('err'))}
+function loginUI(){if(document.getElementById('lg'))return;if(typeof firebase==='undefined'){alert('Synchronisation indisponible (pas de connexion Internet au premier lancement).');return}
+const o=document.createElement('div');o.className='ov';o.id='lg';o.innerHTML='<div class="card"><b>☁ Connexion pour synchroniser</b><p class="m">Utilisez le même e-mail et le même mot de passe sur le téléphone et sur le PC.</p><p><input id="le" type="email" placeholder="E-mail" style="width:100%"></p><p><input id="lp" type="password" placeholder="Mot de passe" style="width:100%"></p><p id="lm" class="m" style="color:var(--ko)"></p><div class="row"><button onclick="localStorage.setItem(\'btsNoSync\',1);this.closest(\'.ov\').remove()">Continuer sans synchro</button><button class="p" onclick="doLogin()">Se connecter</button></div></div>';document.body.appendChild(o)}
+function doLogin(){const e=document.getElementById('le').value.trim(),pw=document.getElementById('lp').value;document.getElementById('lm').textContent='Connexion…';
+fauth.signInWithEmailAndPassword(e,pw).then(()=>{localStorage.removeItem('btsNoSync');document.getElementById('lg').remove()}).catch(er=>{document.getElementById('lm').textContent=/invalid|wrong|user-not/.test(er.code)?'E-mail ou mot de passe incorrect.':'Erreur : '+er.code})}
+function syncCard(){return '<div class="card"><b>☁ Synchronisation</b><div class="m">'+(user?'Connecté : '+esc(user.email):'Non connecté : les données restent sur cet appareil.')+'</div><div class="row" style="margin-top:8px">'+(user?'<button onclick="fauth.signOut()">Se déconnecter</button>':'<button class="p" onclick="localStorage.removeItem(\'btsNoSync\');loginUI()">Se connecter</button>')+'<span class="tag syncs"></span></div></div>'}
+const _vRG=vRG;vRG=function(){return syncCard()+_vRG()};
+render();initSync();setSync(syncState);
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 </script></body></html>
